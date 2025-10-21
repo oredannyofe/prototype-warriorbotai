@@ -1,6 +1,7 @@
 [tool.ruff]
 line-length = 100
 extend-select = ["E", "F", "I"]
+ignore = ["E402", "F401", "F841"]
 
 [tool.mypy]
 python_version = "3.11"

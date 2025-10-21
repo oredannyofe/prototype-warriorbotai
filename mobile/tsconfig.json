@@ -7,7 +7,7 @@
     "strict": true,
     "esModuleInterop": true,
     "allowSyntheticDefaultImports": true,
-    "types": ["react", "react-native"],
+    "types": ["react", "react-native", "node"],
     "baseUrl": ".",
     "paths": {"*": ["src/*"]},
     "noEmit": true,

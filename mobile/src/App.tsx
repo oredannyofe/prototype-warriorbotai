@@ -15,6 +15,7 @@ export type RootStackParamList = {
   HcpPatients: undefined;
   HcpTriage: undefined;
   Settings: undefined;
+  Consent: undefined;
 };
 
 const Stack = createNativeStackNavigator<RootStackParamList>();
