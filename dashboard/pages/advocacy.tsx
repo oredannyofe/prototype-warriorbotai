@@ -18,10 +18,10 @@ export default function Advocacy() {
   })() }, [days])
 
   async function exportPdf(){
-    const [{ default: html2canvas }, { jsPDF }] = await Promise.all([
-      import('html2canvas'),
-      import('jspdf') as any,
-    ]);
+    const html2canvasMod = await import('html2canvas');
+    const jspdfMod = await import('jspdf');
+    const html2canvas = html2canvasMod.default;
+    const { jsPDF } = jspdfMod as any;
     const el = document.getElementById('advocacy-content');
     if (!el) return;
     const canvas = await html2canvas(el as HTMLElement, { useCORS: true, scale: 2, backgroundColor: '#ffffff' });

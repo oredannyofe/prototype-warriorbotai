@@ -10,7 +10,7 @@ export default function EducationScreen(){
     <SafeAreaView style={{flex:1}}>
       <ScrollView style={{padding:16}}>
         <Text style={{fontSize:20, fontWeight:'bold', marginBottom:8}}>Education</Text>
-        {items.map(it=> (
+        {items.map((it: any)=> (
           <View key={it.id} style={{marginBottom:12}}>
             <Text style={{fontWeight:'bold'}}>{it.title}</Text>
             <Text>{it.body}</Text>

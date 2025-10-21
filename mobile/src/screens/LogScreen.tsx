@@ -5,7 +5,7 @@ import { predictRisk, createLog } from '../services/api';
 export default function LogScreen(){
   const [form, setForm] = React.useState({ pain_level:'5', hydration_ml:'1000', activity_level:'4', heart_rate:'100', spo2:'95' });
   const [result, setResult] = React.useState<any | null>(null);
-  const onChange = (k: string, v: string)=> setForm(s=>({...s, [k]:v}));
+  const onChange = (k: string, v: string)=> setForm((s:any)=>({...s, [k]:v}));
   const submit = async()=>{
     const payload = {
       pain_level: Number(form.pain_level),
@@ -22,7 +22,7 @@ export default function LogScreen(){
       {['pain_level','hydration_ml','activity_level','heart_rate','spo2'].map((k)=> (
         <View key={k} style={{marginBottom:8}}>
           <Text>{k}</Text>
-          <TextInput keyboardType='numeric' value={(form as any)[k]} onChangeText={(v)=>onChange(k,v)} style={{borderWidth:1, padding:8, borderRadius:6}} />
+          <TextInput keyboardType='numeric' value={(form as any)[k]} onChangeText={(v: string)=>onChange(k,v)} style={{borderWidth:1, padding:8, borderRadius:6}} />
         </View>
       ))}
       <Button title="Predict" onPress={submit} />
