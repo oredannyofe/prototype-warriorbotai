@@ -19,7 +19,7 @@ jobs:
           pip install -r backend/requirements.txt
       - name: Lint
         run: ruff check backend --output-format=github || true
-- name: Typecheck
+      - name: Typecheck
         run: mypy --ignore-missing-imports backend/app
       - name: Tests
         run: pytest backend/tests -q
@@ -30,7 +30,7 @@ jobs:
       - uses: actions/checkout@v4
       - uses: actions/setup-node@v4
         with:
-          node-version: '18'
+          node-version: '20'
       - name: Install
         run: |
           cd dashboard
@@ -50,7 +50,7 @@ jobs:
       - uses: actions/checkout@v4
       - uses: actions/setup-node@v4
         with:
-          node-version: '18'
+          node-version: '20'
       - name: Install
         run: |
           cd mobile
