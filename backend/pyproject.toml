@@ -2,6 +2,7 @@
 line-length = 100
 extend-select = ["E", "F", "I"]
 ignore = ["E402", "F401", "F841"]
+fix = true
 
 [tool.mypy]
 python_version = "3.11"

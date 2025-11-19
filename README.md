@@ -67,9 +67,14 @@ Auth & Notifications
 
 API endpoints
 - POST /risk/predict
+- POST /risk/forecast   (3–5 day outlook using weather + your last inputs)
 - POST /logs
 - GET  /education
 - POST /simulate/therapy
+- GET  /advocacy/aggregate
+- GET  /advocacy/geo
+- GET  /commons/export   (anonymized, opt-in research dataset)
+- POST /commons/commit   (prototype blockchain-style hash commit)
 - GET  /hcp/summary
 
 Security/Compliance

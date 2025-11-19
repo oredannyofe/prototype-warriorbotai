@@ -58,3 +58,10 @@ class Audit(SQLModel, table=True):
     action: str
     data: Optional[str] = None  # JSON string payload
     created_at: datetime = Field(default_factory=datetime.utcnow)
+
+class DataCommit(SQLModel, table=True):
+    id: Optional[int] = Field(default=None, primary_key=True)
+    root_hash: str  # sha256 of exported payload for transparency (prototype for blockchain)
+    payload_size: int
+    note: Optional[str] = None
+    created_at: datetime = Field(default_factory=datetime.utcnow)

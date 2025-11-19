@@ -7,8 +7,10 @@ from ..models.schemas import (
     TherapySimInput,
     TherapySimResponse,
     HcpSummary,
+    RiskForecastInput,
+    RiskForecastResponse,
 )
-from ..services.risk import predict_risk
+from ..services.risk import predict_risk, forecast_risk
 from ..services.education import get_education
 from ..services.therapy_sim import simulate_therapy
 from ..deps import get_db, get_optional_user
@@ -17,7 +19,7 @@ from ..services.notify import send_push_to_expo
 from sqlmodel import select
 import json
 
-router = APIRouter()
+router = APIRouter(tags=["core"])
 
 @router.post("/risk/predict", response_model=RiskResponse)
 async def risk_predict(payload: RiskInput, db: Session = Depends(get_db), user: User | None = Depends(get_optional_user)):
@@ -53,6 +55,10 @@ async def risk_predict(payload: RiskInput, db: Session = Depends(get_db), user: 
     except Exception:
         pass
     return resp
+
+@router.post("/risk/forecast", response_model=RiskForecastResponse)
+async def risk_forecast(payload: RiskForecastInput):
+    return await forecast_risk(payload)
 
 @router.get("/education", response_model=list[EducationItem])
 async def education(lang: str | None = None):

@@ -53,7 +53,7 @@ def list_patients(q: str | None = None, limit: int = 50, offset: int = 0, db: Se
             if last.hydration_ml < 1500: score += 0.15
             last_risk = {"score": round(min(1.0, score), 2), "level": "high" if score>=0.66 else ("medium" if score>=0.33 else "low")}
         items.append({"id": u.id, "email": u.email, "full_name": u.full_name, "last_log_at": last.created_at.isoformat() if last else None, "last_risk": last_risk})
-return {"total": total, "items": items}
+    return {"total": total, "items": items}
 
 @hcp_router.get("/find-patient")
 def find_patient(q: str, db: Session = Depends(get_db), hcp=Depends(get_current_hcp)):

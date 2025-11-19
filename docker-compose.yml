@@ -1,3 +1,28 @@
+version: '3.9'
+services:
+  db:
+    image: postgres:16-alpine
+    environment:
+      POSTGRES_PASSWORD: postgres
+      POSTGRES_USER: postgres
+      POSTGRES_DB: warriorbot
+    ports:
+      - "5432:5432"
+    volumes:
+      - dbdata:/var/lib/postgresql/data
+  server:
+    build: ./server
+    environment:
+      DATABASE_URL: postgresql://postgres:postgres@db:5432/warriorbot
+      JWT_SECRET: dev-secret-change
+      PORT: 4000
+    depends_on:
+      - db
+    ports:
+      - "4000:4000"
+volumes:
+  dbdata:
+
 services:
   db:
     image: postgres:16-alpine

@@ -1,7 +1,7 @@
 # syntax=docker/dockerfile:1
 FROM node:18-alpine AS deps
 WORKDIR /app
-COPY package.json package-lock.json* yarn.lock* pnpm-lock.yaml* ./
+COPY package*.json ./
 RUN npm ci || npm install
 
 FROM node:18-alpine AS build

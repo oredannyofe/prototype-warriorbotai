@@ -1,5 +1,9 @@
 fastapi==0.115.0
 uvicorn[standard]==0.30.6
+pydantic==2.9.2
+
+fastapi==0.115.0
+uvicorn[standard]==0.30.6
 numpy==2.1.2
 # Optional: only loads if available
 # tflite-runtime may not have wheels on all platforms; keep optional

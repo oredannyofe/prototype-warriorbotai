@@ -1,0 +1,92 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+model User {
+  id           Int       @id @default(autoincrement())
+  email        String    @unique
+  passwordHash String
+  role         String    @default("warrior")
+  createdAt    DateTime  @default(now())
+  profile      Profile?
+  logs         DailyLog[]
+  crises       CrisisEvent[]
+}
+
+model Profile {
+  id        Int     @id @default(autoincrement())
+  userId    Int     @unique
+  genotype  String
+  age       Int
+  country   String
+  city      String?
+  baselinePain Int    @default(0)
+  triggers  String[]
+  meds      String[]
+  allergies String[]
+  emergencyContacts Json? // name/phone pairs
+  hospital  String?
+  user      User    @relation(fields: [userId], references: [id])
+}
+
+model DailyLog {
+  id           Int      @id @default(autoincrement())
+  userId       Int
+  pain         Int
+  mood         String?
+  sleep        String?
+  hydrationCups Int     @default(0)
+  medsTaken    Boolean  @default(false)
+  triggers     String[]
+  notes        String?
+  createdAt    DateTime @default(now())
+  user         User     @relation(fields: [userId], references: [id])
+
+  @@index([userId, createdAt])
+}
+
+model CrisisEvent {
+  id         Int      @id @default(autoincrement())
+  userId     Int
+  location   String?
+  pain       Int
+  chestPain  Boolean   @default(false)
+  dyspnea    Boolean   @default(false)
+  confusion  Boolean   @default(false)
+  fever      Boolean   @default(false)
+  triggers   String[]
+  meds       String[]
+  triage     String    // green | yellow | red
+  summary    String
+  createdAt  DateTime @default(now())
+  user       User     @relation(fields: [userId], references: [id])
+
+  @@index([userId, createdAt])
+}
+
+model ContentItem {
+  id       Int      @id @default(autoincrement())
+  slug     String   @unique
+  title    String
+  body     String
+  language String   @default("en")
+  audience String   @default("adult")
+}
+
+model Reminder {
+  id        Int      @id @default(autoincrement())
+  userId    Int
+  type      String   // hydration | medication
+  label     String
+  timeHM    String   // HH:mm (24h)
+  enabled   Boolean  @default(true)
+  createdAt DateTime @default(now())
+  user      User     @relation(fields: [userId], references: [id])
+
+  @@index([userId])
+}

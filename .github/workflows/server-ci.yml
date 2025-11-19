@@ -1,0 +1,50 @@
+name: Server CI
+on:
+  push:
+    branches: [ main ]
+  pull_request:
+    branches: [ main ]
+
+jobs:
+  build-and-migrate:
+    runs-on: ubuntu-latest
+    services:
+      postgres:
+        image: postgres:16-alpine
+        env:
+          POSTGRES_USER: postgres
+          POSTGRES_PASSWORD: postgres
+          POSTGRES_DB: warriorbot
+        ports:
+          - 5432:5432
+        options: >-
+          --health-cmd "pg_isready -U postgres"
+          --health-interval 10s
+          --health-timeout 5s
+          --health-retries 5
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 20
+          cache: npm
+          cache-dependency-path: server/package-lock.json
+      - name: Install deps
+        working-directory: server
+        run: |
+          npm ci || npm install
+          npm run prisma:generate
+      - name: Wait for DB and migrate
+        env:
+          DATABASE_URL: postgresql://postgres:postgres@localhost:5432/warriorbot
+        working-directory: server
+        run: |
+          for i in {1..30}; do
+            pg_isready -h localhost -p 5432 -U postgres && break || sleep 2;
+          done
+          npx prisma migrate deploy
+      - name: Build server
+        working-directory: server
+        run: npm run build
+      - name: Docker build
+        run: docker build -t warriorbot-server:ci ./server

@@ -22,6 +22,18 @@ class RiskResponse(BaseModel):
     next_steps: List[str]
     explanations: List[RiskExplanation] = []
 
+class RiskForecastInput(RiskInput):
+    days: int = Field(default=5, ge=1, le=7)
+
+class RiskForecastDay(BaseModel):
+    date: str
+    risk_score: float = Field(ge=0.0, le=1.0)
+    risk_level: str
+    message: str
+
+class RiskForecastResponse(BaseModel):
+    days: List[RiskForecastDay]
+
 class LogEntry(BaseModel):
     pain_level: int
     hydration_ml: int

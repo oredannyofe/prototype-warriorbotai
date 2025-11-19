@@ -8,6 +8,7 @@ from .api.logs import logs_router
 from .api.hcp import hcp_router
 from .api.admin import admin_router
 from .api.advocacy import advocacy_router
+from .api.commons import commons_router
 from .db import init_db
 from .core.config import settings
 
@@ -42,4 +43,5 @@ app.include_router(logs_router)
 app.include_router(hcp_router)
 app.include_router(admin_router)
 app.include_router(advocacy_router)
+app.include_router(commons_router)
 app.include_router(router)
