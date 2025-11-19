@@ -36,6 +36,8 @@ Quickstart
 - Use Admin Secret on dashboard login to register HCP, or call /admin/seed
 
 Docker (optional)
+- compose: docker compose up --build
+- builds: CI builds images for backend, dashboard, server, and ml_service (workflow: Docker Images)
 - docker compose up --build
 
 Production (Docker Compose)
