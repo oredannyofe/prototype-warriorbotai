@@ -36,7 +36,7 @@ async def risk_predict(payload: RiskInput, db: Session = Depends(get_db), user: 
                     # can't inject BackgroundTasks here easily; call directly (async inside ignored) best-effort
                     try:
                         import anyio
-                        anyio.from_thread.run(asyncio_func=send_push_to_expo, expo_push_token=user.expo_push_token, title="High risk alert", body=resp.message)
+                        anyio.from_thread.run(send_push_to_expo, expo_push_token=user.expo_push_token, title="High risk alert", body=resp.message)
                     except Exception:
                         pass
                 # triage cases for assigned HCPs
@@ -48,7 +48,7 @@ async def risk_predict(payload: RiskInput, db: Session = Depends(get_db), user: 
                         hcp = db.get(User, a.hcp_id)
                         if hcp and hcp.expo_push_token:
                             import anyio
-                            anyio.from_thread.run(asyncio_func=send_push_to_expo, expo_push_token=hcp.expo_push_token, title="Patient high risk", body=f"Patient {user.full_name or user.email}: {resp.message}")
+                            anyio.from_thread.run(send_push_to_expo, expo_push_token=hcp.expo_push_token, title="Patient high risk", body=f"Patient {user.full_name or user.email}: {resp.message}")
                     except Exception:
                         pass
             db.commit()

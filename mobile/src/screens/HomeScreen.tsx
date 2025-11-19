@@ -49,3 +49,4 @@ export default function HomeScreen({ navigation }: any) {
       </Text>
     </ScrollView>
   );
+}
