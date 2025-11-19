@@ -4,8 +4,11 @@ WORKDIR /app
 # system deps for prisma on alpine
 RUN apk add --no-cache openssl libc6-compat python3 make g++
 COPY package.json package-lock.json* ./
-# Install dev deps for build (use ci if lock exists)
-RUN if [ -f package-lock.json ]; then npm ci --no-audit --fund=false; else npm install --no-audit --fund=false; fi
+# Be lenient on peer deps during CI builds
+ENV NPM_CONFIG_AUDIT=false \
+    NPM_CONFIG_FUND=false \
+    NPM_CONFIG_LEGACY_PEER_DEPS=true
+RUN npm install --no-audit --fund=false
 
 FROM node:20-alpine AS builder
 WORKDIR /app
