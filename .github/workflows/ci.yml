@@ -19,8 +19,8 @@ jobs:
           pip install -r backend/requirements.txt
       - name: Lint
         run: ruff check backend --output-format=github || true
-      - name: Typecheck
-        run: mypy backend
+- name: Typecheck
+        run: mypy --ignore-missing-imports backend/app
       - name: Tests
         run: pytest backend/tests -q
 

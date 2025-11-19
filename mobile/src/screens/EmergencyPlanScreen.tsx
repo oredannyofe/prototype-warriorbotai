@@ -41,7 +41,7 @@ export default function EmergencyPlanScreen() {
       <Text style={{ fontSize: 20, fontWeight: '600' }}>Emergency Plan</Text>
       <Text>Preferred hospital/clinic</Text>
       <TextInput value={hospital} onChangeText={setHospital} style={{ borderWidth: 1, padding: 8, marginVertical: 8 }} />
-      <Text>Emergency contacts (JSON array of {{name, phone}})</Text>
+<Text>Emergency contacts (JSON array of {"{name, phone}"})</Text>
       <TextInput value={contacts} onChangeText={setContacts} placeholder='[{"name":"Mum","phone":"+234..."}]' multiline numberOfLines={4} style={{ borderWidth: 1, padding: 8, marginVertical: 8 }} />
       <Button title='Save Plan' onPress={save} />
       {saved && <Text style={{ marginTop: 8 }}>Saved</Text>}

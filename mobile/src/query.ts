@@ -23,7 +23,7 @@ export async function initQueryPersistence() {
   persistQueryClient({
     queryClient,
     persister,
-    dehydrateOptions: { shouldDehydrateQuery: (q) => q.state.status === 'success' },
+dehydrateOptions: { shouldDehydrateQuery: (q: any) => q.state.status === 'success' },
     maxAge: 1000 * 60 * 60 * 24, // 24 hours
   });
 }
