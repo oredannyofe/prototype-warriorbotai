@@ -1,8 +1,11 @@
-from fastapi import APIRouter, Depends
 from datetime import datetime, timedelta
+from typing import Dict, Tuple
+
+from fastapi import APIRouter, Depends
 from sqlmodel import Session, select
+
 from ..deps import get_db
-from ..models.tables import User, Log
+from ..models.tables import Log, User
 
 advocacy_router = APIRouter(prefix="/advocacy", tags=["advocacy"])
 
@@ -11,11 +14,14 @@ def aggregate(days: int = 30, db: Session = Depends(get_db)):
     days = max(1, min(days, 90))
     since = datetime.utcnow() - timedelta(days=days)
     # Only include opt-in users
-    optin_users = [u.id for u in db.exec(select(User).where(User.data_commons_opt_in == True)).all()]
+    optin_users = [
+        u.id
+        for u in db.exec(select(User).where(User.data_commons_opt_in.is_(True))).all()
+    ]
     if not optin_users:
         return {"since": since.isoformat(), "days": days, "series": []}
     logs = db.exec(select(Log).where((Log.user_id.in_(optin_users)) & (Log.created_at >= since))).all()
-    buckets = {}
+    buckets: Dict[str, Dict[str, float]] = {}
     for l in logs:
         d = l.created_at.date().isoformat()
         b = buckets.setdefault(d, {"count": 0, "sum_pain": 0, "sum_hydration": 0})
@@ -37,7 +43,10 @@ def aggregate(days: int = 30, db: Session = Depends(get_db)):
 def geo(days: int = 30, db: Session = Depends(get_db)):
     days = max(1, min(days, 90))
     since = datetime.utcnow() - timedelta(days=days)
-    optin_users = [u.id for u in db.exec(select(User).where(User.data_commons_opt_in == True)).all()]
+    optin_users = [
+        u.id
+        for u in db.exec(select(User).where(User.data_commons_opt_in.is_(True))).all()
+    ]
     if not optin_users:
         return []
     logs = db.exec(
@@ -45,7 +54,7 @@ def geo(days: int = 30, db: Session = Depends(get_db)):
             (Log.user_id.in_(optin_users)) & (Log.created_at >= since) & (Log.latitude.is_not(None)) & (Log.longitude.is_not(None))
         )
     ).all()
-    bins = {}
+    bins: Dict[Tuple[float, float], int] = {}
     for l in logs:
         lat = round(float(l.latitude), 1)
         lon = round(float(l.longitude), 1)

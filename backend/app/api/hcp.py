@@ -21,13 +21,20 @@ def stats(db: Session = Depends(get_db), hcp=Depends(get_current_hcp)):
         if not last:
             continue
         score = 0.0
-        if last.pain_level >= 7: score += 0.35
-        if (last.spo2 or 100) < 94: score += 0.25
-        if (last.heart_rate or 60) > 110: score += 0.1
-        if last.hydration_ml < 1500: score += 0.15
-        if score < 0.33: low += 1
-        elif score < 0.66: med += 1
-        else: high += 1
+        if last.pain_level >= 7:
+            score += 0.35
+        if (last.spo2 or 100) < 94:
+            score += 0.25
+        if (last.heart_rate or 60) > 110:
+            score += 0.10
+        if last.hydration_ml < 1500:
+            score += 0.15
+        if score < 0.33:
+            low += 1
+        elif score < 0.66:
+            med += 1
+        else:
+            high += 1
     open_cases = len(db.exec(select(TriageCase).where((TriageCase.hcp_id == hcp.id) & (TriageCase.status == "open"))).all())
     return {"total_patients": total_patients, "recent_logs": recent_logs, "open_cases": open_cases, "risk": {"low": low, "medium": med, "high": high}}
 
@@ -47,11 +54,16 @@ def list_patients(q: str | None = None, limit: int = 50, offset: int = 0, db: Se
         last_risk = None
         if last:
             score = 0.0
-            if last.pain_level >= 7: score += 0.35
-            if (last.spo2 or 100) < 94: score += 0.25
-            if (last.heart_rate or 60) > 110: score += 0.1
-            if last.hydration_ml < 1500: score += 0.15
-            last_risk = {"score": round(min(1.0, score), 2), "level": "high" if score>=0.66 else ("medium" if score>=0.33 else "low")}
+            if last.pain_level >= 7:
+                score += 0.35
+            if (last.spo2 or 100) < 94:
+                score += 0.25
+            if (last.heart_rate or 60) > 110:
+                score += 0.10
+            if last.hydration_ml < 1500:
+                score += 0.15
+            level = "high" if score >= 0.66 else ("medium" if score >= 0.33 else "low")
+            last_risk = {"score": round(min(1.0, score), 2), "level": level}
         items.append({"id": u.id, "email": u.email, "full_name": u.full_name, "last_log_at": last.created_at.isoformat() if last else None, "last_risk": last_risk})
     return {"total": total, "items": items}
 

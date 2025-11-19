@@ -18,17 +18,47 @@ async def _heuristic_score(inp: RiskInput, env: dict) -> tuple[float, list[RiskE
     score = 0.0
     reasons: list[RiskExplanation] = []
     if inp.pain_level >= 7:
-        score += 0.35; reasons.append(RiskExplanation(factor="pain", weight=0.35, note="High pain reported"))
+        score += 0.35
+        reasons.append(
+            RiskExplanation(
+                factor="pain", weight=0.35, note="High pain reported"
+            )
+        )
     if (inp.spo2 or 100) < 94:
-        score += 0.25; reasons.append(RiskExplanation(factor="spo2", weight=0.25, note="Low oxygen saturation"))
+        score += 0.25
+        reasons.append(
+            RiskExplanation(
+                factor="spo2", weight=0.25, note="Low oxygen saturation"
+            )
+        )
     if (inp.heart_rate or 60) > 110:
-        score += 0.1; reasons.append(RiskExplanation(factor="tachycardia", weight=0.10, note="Elevated heart rate"))
-    if (inp.hydration_ml) < 1500:
-        score += 0.15; reasons.append(RiskExplanation(factor="hydration", weight=0.15, note="Low hydration"))
-    if env.get("temperature_c") is not None and env.get("temperature_c") < 18:
-        score += 0.05; reasons.append(RiskExplanation(factor="cold", weight=0.05, note="Cold ambient temp"))
-    if env.get("relative_humidity") is not None and env.get("relative_humidity") > 85:
-        score += 0.05; reasons.append(RiskExplanation(factor="humidity", weight=0.05, note="High humidity"))
+        score += 0.10
+        reasons.append(
+            RiskExplanation(
+                factor="tachycardia", weight=0.10, note="Elevated heart rate"
+            )
+        )
+    if inp.hydration_ml < 1500:
+        score += 0.15
+        reasons.append(
+            RiskExplanation(
+                factor="hydration", weight=0.15, note="Low hydration"
+            )
+        )
+    t = env.get("temperature_c")
+    if t is not None and t < 18:
+        score += 0.05
+        reasons.append(
+            RiskExplanation(factor="cold", weight=0.05, note="Cold ambient temp")
+        )
+    rh = env.get("relative_humidity")
+    if rh is not None and rh > 85:
+        score += 0.05
+        reasons.append(
+            RiskExplanation(
+                factor="humidity", weight=0.05, note="High humidity"
+            )
+        )
     score = max(0.0, min(1.0, score))
     return score, reasons
 
@@ -54,14 +84,27 @@ async def predict_risk(inp: RiskInput) -> RiskResponse:
         score, reasons = await _heuristic_score(inp, env)
 
     if score < 0.33:
-        level = "low"; message = "Risk low—maintain routine hydration and rest."
+        level = "low"
+        message = "Risk low—maintain routine hydration and rest."
         steps = ["Drink water", "Light stretching", "Log symptoms daily"]
     elif score < 0.66:
-        level = "medium"; message = "Risk rising—hydrate, reduce exertion, monitor pain."
-        steps = ["Increase fluids", "Avoid temperature extremes", "Prepare rescue meds per plan"]
+        level = "medium"
+        message = "Risk rising—hydrate, reduce exertion, monitor pain."
+        steps = [
+            "Increase fluids",
+            "Avoid temperature extremes",
+            "Prepare rescue meds per plan",
+        ]
     else:
-        level = "high"; message = "High risk—rest, hydrate, and consider contacting your clinician."
-        steps = ["Rest now", "Warmth and hydration", "If pain escalates, call care team / ER"]
+        level = "high"
+        message = (
+            "High risk—rest, hydrate, and consider contacting your clinician."
+        )
+        steps = [
+            "Rest now",
+            "Warmth and hydration",
+            "If pain escalates, call care team / ER",
+        ]
 
     return RiskResponse(
         risk_score=round(score, 2),
@@ -83,10 +126,20 @@ async def forecast_risk(inp: RiskForecastInput) -> RiskForecastResponse:
         env = {"temperature_c": e.get("temperature_c"), "relative_humidity": e.get("relative_humidity"), "pressure_hpa": e.get("pressure_hpa")}
         score, _ = await _heuristic_score(inp, env)
         if score < 0.33:
-            level = "low"; message = "Low risk forecast—maintain routine."
+            level = "low"
+            message = "Low risk forecast—maintain routine."
         elif score < 0.66:
-            level = "medium"; message = "Moderate risk—hydrate and avoid extremes."
+            level = "medium"
+            message = "Moderate risk—hydrate and avoid extremes."
         else:
-            level = "high"; message = "High risk—plan rest and clinician check-ins."
-        items.append(RiskForecastDay(date=e.get("date"), risk_score=round(score,2), risk_level=level, message=message))
+            level = "high"
+            message = "High risk—plan rest and clinician check-ins."
+        items.append(
+            RiskForecastDay(
+                date=e.get("date"),
+                risk_score=round(score, 2),
+                risk_level=level,
+                message=message,
+            )
+        )
     return RiskForecastResponse(days=items)
