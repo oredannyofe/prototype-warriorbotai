@@ -8,14 +8,15 @@ datasource db {
 }
 
 model User {
-  id           Int       @id @default(autoincrement())
-  email        String    @unique
+  id           Int          @id @default(autoincrement())
+  email        String       @unique
   passwordHash String
-  role         String    @default("warrior")
-  createdAt    DateTime  @default(now())
+  role         String       @default("warrior")
+  createdAt    DateTime     @default(now())
   profile      Profile?
   logs         DailyLog[]
   crises       CrisisEvent[]
+  reminders    Reminder[]   // relation back to Reminder.user
 }
 
 model Profile {
