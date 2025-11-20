@@ -8,6 +8,8 @@ FROM node:18-alpine AS build
 WORKDIR /app
 COPY --from=deps /app/node_modules ./node_modules
 COPY . .
+# ensure public exists even if empty to satisfy COPY in final stage
+RUN mkdir -p public
 # NEXT_PUBLIC_API_URL can be set at runtime; default to /api for same-origin proxy
 ENV NEXT_PUBLIC_API_URL=/api
 RUN npm run build
