@@ -1,4 +1,4 @@
-import { Body, Controller, Delete, Get, Param, Patch, Post, UseGuards, BadRequestException } from '@nestjs/common';
+import { Body, Controller, Delete, Get, Param, Patch, Post, UseGuards, BadRequestException, Query } from '@nestjs/common';
 import { PrismaService } from '../../prisma/prisma.service';
 import { JwtGuard } from '../../common/jwt.guard';
 import { CurrentUser } from '../../common/user.decorator';

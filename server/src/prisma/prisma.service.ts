@@ -7,7 +7,8 @@ export class PrismaService extends PrismaClient implements OnModuleInit {
     await this.$connect();
   }
   async enableShutdownHooks(app: INestApplication) {
-    this.$on('beforeExit', async () => {
+    // Cast to any to avoid overly strict generic constraint in Prisma types on CI
+    (this as any).$on('beforeExit', async () => {
       await app.close();
     });
   }

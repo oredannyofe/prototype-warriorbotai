@@ -51,9 +51,23 @@ export class UsersController {
     @Body() body: { genotype?: string; age?: number; country?: string; city?: string; baselinePain?: number; triggers?: string[]; meds?: string[]; allergies?: string[]; emergencyContacts?: any; hospital?: string }
   ) {
     const userId = user.id;
+    // Provide required defaults for create path (genotype, age, country)
+    const createPayload = {
+      userId,
+      baselinePain: body.baselinePain ?? 0,
+      triggers: body.triggers ?? [],
+      meds: body.meds ?? [],
+      allergies: body.allergies ?? [],
+      genotype: body.genotype ?? 'unknown',
+      age: body.age ?? 0,
+      country: body.country ?? 'unknown',
+      city: body.city,
+      emergencyContacts: body.emergencyContacts,
+      hospital: body.hospital,
+    } as const;
     return this.prisma.profile.upsert({
       where: { userId },
-      create: { userId, baselinePain: 0, triggers: [], meds: [], allergies: [], ...body },
+      create: createPayload,
       update: { ...body },
     });
   }

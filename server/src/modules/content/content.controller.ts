@@ -12,7 +12,7 @@ export class ContentController {
 
   @Get('education')
   @Header('Cache-Control', 'public, max-age=900, s-maxage=900')
-  async education(@Query('lang') lang?: string, @Req() req: Request, @Res({ passthrough: true }) res: Response) {
+  async education(@Query('lang') lang: string | undefined, @Req() req: Request, @Res({ passthrough: true }) res: Response) {
     const key = lang ? `education:${lang}` : 'education:all';
     const now = Date.now();
     if (ContentController.cache && ContentController.cache.key === key && now - ContentController.cache.ts < ContentController.TTL) {
